@@ -21,6 +21,7 @@
   * [Usage](#usage)
     * [Install package](#install-package)
     * [Import and use](#import-and-use)
+    * [More details](#more-details)
   * [Notes](#notes)
     * [Sheets type inference constraining / limitation](#sheets-type-inference-constraining--limitation)
     * [Fork notice and credit](#fork-notice-and-credit)
@@ -93,6 +94,10 @@ const ssData = write(data, options)
 // You'll have to construct a File object and provide the fileName with extension.
 browserDownloadFile(new File([ssData], 'fileName.ext'))
 ```
+
+### More details
+
+You can check the [![TypeDoc][TypeDoc-src]][TypeDoc-href], or simply just hover around the functions and read the hint in your IDE.
 
 ## Notes
 
