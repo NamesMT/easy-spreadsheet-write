@@ -1,104 +1,154 @@
-# json-as-xlsx
+<div align="center">
 
-This is a tool that helps to build an excel from a json and it depends only on `xlsx` library
+<h1>Easy Spreadsheet Write</h1>
 
-You can see a live example of it working on any of this sites (there are many just in case):
+<h3>Easy UX/DX for creating spreadsheet files!</h3>
+<img src="./branding.svg" alt="Project's branding image" width="320"/>
 
-- [xlsx.pages.dev](https://xlsx.pages.dev)
-- [xlsx.marroquin.dev](https://xlsx.marroquin.dev)
-- [xlsx.luismarroquin.com](https://xlsx.luismarroquin.com)
+</div>
+
+# easy-spreadsheet-write ![TypeScript heart icon](https://img.shields.io/badge/♡-%23007ACC.svg?logo=typescript&logoColor=white)
+
+[![npm version][npm-version-src]][npm-version-href]
+[![npm downloads][npm-downloads-src]][npm-downloads-href]
+[![Codecov][codecov-src]][codecov-href]
+[![Bundlejs][bundlejs-src]][bundlejs-href]
+[![TypeDoc][TypeDoc-src]][TypeDoc-href]
+
+* [easy-spreadsheet-write ](#easy-spreadsheet-write-)
+  * [Overview](#overview)
+  * [Features](#features)
+  * [Usage](#usage)
+    * [Install package](#install-package)
+    * [Import and use](#import-and-use)
+  * [Notes](#notes)
+    * [Sheets type inference constraint / limitation](#sheets-type-inference-constraint--limitation)
+    * [Fork notice and credit](#fork-notice-and-credit)
+  * [License](#license)
+
+## Overview
+
+**easy-spreadsheet-write**'s main goal is to help you easily create spreadsheet files, with modern DX and type safety.
+
+This package currently wraps on top of [sheetjs](https://sheetjs.com/) to provide the functionalities.
+
+## Features
+
++ 👌 TypeScript
 
 ## Usage
 
-```js
-import xlsx from "json-as-xlsx"
-// or require
-let xlsx = require("json-as-xlsx")
+### Install package
 
-let data = [
-  {
-    sheet: "Adults",
-    columns: [
-      { label: "User", value: "user" }, // Top level data
-      { label: "Age", value: (row) => row.age + " years" }, // Custom format
-      { label: "Phone", value: (row) => (row.more ? row.more.phone || "" : "") }, // Run functions
-    ],
-    content: [
-      { user: "Andrea", age: 20, more: { phone: "11111111" } },
-      { user: "Luis", age: 21, more: { phone: "12345678" } },
-    ],
-  },
-  {
-    sheet: "Children",
-    columns: [
-      { label: "User", value: "user" }, // Top level data
-      { label: "Age", value: "age", format: '# "years"' }, // Column format
-      { label: "Phone", value: "more.phone", format: "(###) ###-####" }, // Deep props and column format
-    ],
-    content: [
-      { user: "Manuel", age: 16, more: { phone: 9999999900 } },
-      { user: "Ana", age: 17, more: { phone: 8765432135 } },
-    ],
-  },
-]
+```sh
+# npm
+npm install easy-spreadsheet-write
 
-let settings = {
-  fileName: "MySpreadsheet", // Name of the resulting spreadsheet
-  extraLength: 3, // A bigger number means that columns will be wider
-  writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
-  writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
-  RTL: true, // Display the columns from right-to-left (the default value is false)
-}
+# bun
+bun add easy-spreadsheet-write
 
-xlsx(data, settings) // Will download the excel file
+# pnpm
+pnpm install easy-spreadsheet-write
 ```
 
-If you want to trigger something after the file is downloaded, you can use the `callback` parameter:
+### Import and use
 
-```js
-let callback = function (sheet) {
-  console.log("Download complete:", sheet)
-}
+```ts
+// ESM
+import { constructWorkbook, ESWOptions, write, writeFile } from 'easy-spreadsheet-write'
 
-xlsx(data, settings, callback) // Will download the excel file
+const options = {
+  fileName: 'MyODS', // extension will be added automatically if not provided
+  cellPadding: 3, // In formats that support styling, this is the padding between the cell contents and the cell border.
+  RTL: undefined, // Display the columns from right-to-left (defaults `false`)
+
+  // ...sheetjsOptions, // Write options of sheetjs: https://docs.sheetjs.com/docs/api/write-options
+  bookType: 'ods', // Defaults to 'xlsx'
+} satisfies ESWOptions
+
+const workbook = constructWorkbook(
+  [
+    {
+      sheet: 'Sheet1',
+      content: [
+        { user: 'Luis', ghUsername: 'LuisEnMarroquin', likes: 99 },
+      ],
+      // The resolver function `row => ...` will automatically infer the type from `content`
+      columns: [
+        ['User name', 'user'], // Array syntax
+        ['User name (lowercase)', row => row.user.toLowerCase()],
+        { label: 'Likes count', value: 'likes' }, // Object syntax
+        { label: 'GitHub URL', value: row => `https://github.com/${row.ghUsername}` },
+      ],
+    },
+  ],
+  options
+)
+
+// Similar to SheetJS's writeFile, this will write the file to disk / trigger a browser download
+writeFile(data, options)
+
+// There is a `browserDownloadFile` helper in case you need to defer the download:
+const ssData = write(data, options)
+// You'll have to construct a File object and provide the fileName with extension.
+browserDownloadFile(new File([ssData], 'fileName.ext'))
 ```
 
-### Column formatting
+## Notes
 
-> **Note:** Cell formatting is type based, i.e. the format type and value type must match.
->
-> If you want to use a Date format, the value must be of type Date; if you want a number format, the value must be a Number.
+### Sheets type inference constraint / limitation
 
-Column formatting can be provided in the column object, i.e.
-
-```js
-columns: [{ label: "Income", value: "income", format: "€#,##0.00" }]
+If you use multiple sheets, or you want to constraint the type of the sheet, follow this example:
+```ts
+// Set `<any>` for constructWorkbook to allow different types for the sheets
+const workbook = constructWorkbook<any>(
+  [
+    // Use `defineJsonSheet` to define the sheets
+    defineJsonSheet({
+      sheet: 'Sheet1',
+      content: [
+        { what: 'wut' },
+      ],
+      columns: [
+        ['What', 'what'],
+      ],
+    }),
+    defineJsonSheet({
+      sheet: 'Sheet2',
+      content: [
+        '{"encoded":"sample"}',
+      ],
+      columns: [
+        ['Subject type', row => JSON.parse(row).type],
+      ],
+    }),
+  ],
+)
 ```
 
-- A list of SheetJS format examples can be found
-  here: [SSF library](https://github.com/SheetJS/sheetjs/blob/f443aa8475ebf051fc4e888cf0a6c3e5b751813c/bits/10_ssf.js#L42)
-- ECMA-376 number formatting
-  specification: [Number formats](https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_numFmts_topic_ID0E6KK6.html)
+### Fork notice and credit
 
-Examples
+`easy-spreadsheet-write` is a fork of [`json-as-xlsx`](https://github.com/LuisEnMarroquin/json-as-xlsx), which I've been using for a while, but it is a bit outdated and the DX isn't as modern as it could be, so I clicked the fork button, heavily rewrite it, updating the toolchain to modern standards, improving the types, adding features, and a new package name which better describes it.
 
-```js
-// Number formats
-"$0.00" // Basic
-"\£#,##0.00" // Pound
-"0%" // Percentage
-'#.# "ft"' // Number and text
+Shoutout to Luis for the original work, I'd love to get this merged to upstream, will open a PR but idk if it would be accepted.
 
-// Date formats
-"d-mmm-yy" // 12-Mar-22
-"ddd" // (eg. Sat)
-"dddd" // (eg. Saturday)
-"h:mm AM/PM" // 1:10 PM
-```
+## License
 
-## Examples
+[![License][license-src]][license-href]
 
-This are files used for development, please change imports from `../../src/index` to `json-as-xlsx`
+<!-- Badges -->
 
-- [Express with TypeScript](https://github.com/LuisEnMarroquin/json-as-xlsx/blob/main/packages/demo-express)
-- [ReactJS with TypeScript](https://github.com/LuisEnMarroquin/json-as-xlsx/blob/main/packages/demo-reactjs)
+[npm-version-src]: https://img.shields.io/npm/v/easy-spreadsheet-write?labelColor=18181B&color=F0DB4F
+[npm-version-href]: https://npmjs.com/package/easy-spreadsheet-write
+[npm-downloads-src]: https://img.shields.io/npm/dm/easy-spreadsheet-write?labelColor=18181B&color=F0DB4F
+[npm-downloads-href]: https://npmjs.com/package/easy-spreadsheet-write
+[codecov-src]: https://img.shields.io/codecov/c/gh/namesmt/easy-spreadsheet-write/main?labelColor=18181B&color=F0DB4F
+[codecov-href]: https://codecov.io/gh/namesmt/easy-spreadsheet-write
+[license-src]: https://img.shields.io/github/license/namesmt/easy-spreadsheet-write.svg?labelColor=18181B&color=F0DB4F
+[license-href]: https://github.com/namesmt/easy-spreadsheet-write/blob/main/LICENSE
+[bundlejs-src]: https://img.shields.io/bundlejs/size/easy-spreadsheet-write?labelColor=18181B&color=F0DB4F
+[bundlejs-href]: https://bundlejs.com/?q=easy-spreadsheet-write
+[jsDocs-src]: https://img.shields.io/badge/Check_out-jsDocs.io---?labelColor=18181B&color=F0DB4F
+[jsDocs-href]: https://www.jsdocs.io/package/easy-spreadsheet-write
+[TypeDoc-src]: https://img.shields.io/badge/Check_out-TypeDoc---?labelColor=18181B&color=F0DB4F
+[TypeDoc-href]: https://namesmt.github.io/easy-spreadsheet-write/

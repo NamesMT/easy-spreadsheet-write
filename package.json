@@ -1,17 +1,99 @@
 {
-  "name": "json-as-xlsx",
-  "private": true,
-  "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "start": "lerna run --parallel --stream start",
-    "build": "lerna run --stream build",
-    "test": "lerna run --stream --no-bail test",
-    "static": "cp -R packages/demo-reactjs/build/ build/ && cp CNAME build/CNAME"
+  "name": "easy-spreadsheet-write",
+  "type": "module",
+  "version": "3.0.0",
+  "packageManager": "pnpm@10.12.4",
+  "description": "Easily create spreadsheet files, json to xlsx.",
+  "author": "NamesMT <dangquoctrung123@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/namesmt/easy-spreadsheet-write#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/namesmt/easy-spreadsheet-write.git"
   },
-  "workspaces": [
-    "packages/*"
+  "bugs": "https://github.com/namesmt/easy-spreadsheet-write/issues",
+  "keywords": [
+    "json",
+    "xlsx",
+    "excel",
+    "sheet",
+    "spreadsheet",
+    "create",
+    "generation",
+    "excel",
+    "xlsx",
+    "ods",
+    "fods",
+    "csv",
+    "dsv",
+    "sheetjs"
   ],
-  "dependencies": {
-    "lerna": "^6.1.0"
+  "sideEffects": false,
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "source": "./src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "vitest",
+    "test:types": "tsc --noEmit",
+    "quickcheck": "pnpm run lint && pnpm run test:types",
+    "check": "pnpm run lint && pnpm run test:types && vitest run --coverage",
+    "stub": "obuild --stub",
+    "build": "obuild",
+    "prerelease": "pnpm run check",
+    "release": "pnpm dlx changelogen@latest --release --push --publish",
+    "prepare": "simple-git-hooks",
+    "prepublishOnly": "pnpm run build"
+  },
+  "peerDependencies": {
+    "@e965/xlsx": "^0.20.3"
+  },
+  "peerDependenciesMeta": {
+    "@e965/xlsx": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^4.16.2",
+    "@namesmt/utils": "^0.5.16",
+    "@types/node": "^22.16.3",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^9.31.0",
+    "lint-staged": "^16.1.2",
+    "obuild": "^0.2.1",
+    "simple-git-hooks": "^2.13.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  },
+  "pnpm": {
+    "overrides": {
+      "is-core-module": "npm:@nolyfill/is-core-module@^1.0.39"
+    },
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "simple-git-hooks",
+      "unrs-resolver"
+    ]
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
   }
 }
