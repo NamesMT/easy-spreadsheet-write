@@ -22,7 +22,7 @@
     * [Install package](#install-package)
     * [Import and use](#import-and-use)
   * [Notes](#notes)
-    * [Sheets type inference constraint / limitation](#sheets-type-inference-constraint--limitation)
+    * [Sheets type inference constraining / limitation](#sheets-type-inference-constraining--limitation)
     * [Fork notice and credit](#fork-notice-and-credit)
   * [License](#license)
 
@@ -96,7 +96,7 @@ browserDownloadFile(new File([ssData], 'fileName.ext'))
 
 ## Notes
 
-### Sheets type inference constraint / limitation
+### Sheets type inference constraining / limitation
 
 If you use multiple sheets, or you want to constraint the type of the sheet, follow this example:
 ```ts
@@ -113,7 +113,8 @@ const workbook = constructWorkbook<any>(
         ['What', 'what'],
       ],
     }),
-    defineJsonSheet({
+    // Constrain the type of the sheet to `string` content
+    defineJsonSheet<string>({
       sheet: 'Sheet2',
       content: [
         '{"encoded":"sample"}',
