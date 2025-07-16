@@ -1,7 +1,6 @@
 import type { WorkBook, WritingOptions } from '@e965/xlsx'
 import type { Buffer } from 'node:buffer'
 import type { ESWContentType, ESWDefaultContentType, ESWJsonSheet, ESWOptions } from './types'
-import { parse } from 'node:path'
 import { write as sWrite, writeFile as sWriteFile, utils } from '@e965/xlsx'
 import { jsonSheetToWorkSheet } from './utils'
 
@@ -32,10 +31,7 @@ O['type'] extends 'buffer'
   : O['type'] extends 'string' | 'base64' | 'binary'
     ? string
     : any {
-  const resolvedOptions = {
-    ...options,
-    type: options?.type ?? 'buffer',
-  }
+  const resolvedOptions = resolveOptions(options)
 
   const data = sWrite(workbook, resolvedOptions)
 
@@ -47,9 +43,17 @@ O['type'] extends 'buffer'
 }
 
 export function writeFile(workbook: WorkBook, options?: Pick<ESWOptions, 'fileName' | keyof WritingOptions>): void {
-  let fileName = options?.fileName ?? 'output'
-  if (!parse(fileName).ext)
-    fileName += `.${options?.bookType ?? 'xlsx'}`
+  const resolvedOptions = resolveOptions(options)
 
-  return sWriteFile(workbook, fileName, options)
+  return sWriteFile(workbook, resolvedOptions.fileName, resolvedOptions)
+}
+
+// eslint-disable-next-line ts/explicit-function-return-type
+function resolveOptions(options?: ESWOptions) {
+  return {
+    ...options,
+    bookType: options?.bookType ?? 'xlsx',
+    fileName: options?.fileName ?? 'output',
+    type: options?.type ?? 'buffer',
+  } satisfies ESWOptions
 }
