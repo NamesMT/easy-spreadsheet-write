@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v3.0.3
+
+[compare changes](https://github.com/namesmt/easy-spreadsheet-write/compare/v3.0.2...v3.0.3)
+
+### 📖 Documentation
+
+- **README:** Update ([c906bbc](https://github.com/namesmt/easy-spreadsheet-write/commit/c906bbc))
+
+### ❤️ Contributors
+
+- NamesMT ([@NamesMT](https://github.com/NamesMT))
+
 ## v3.0.2
 
 [compare changes](https://github.com/namesmt/easy-spreadsheet-write/compare/v3.0.1...v3.0.2)
