@@ -54,6 +54,25 @@ pnpm install easy-spreadsheet-write
 
 ### Import and use
 
+Basic usage:
+```ts
+import { constructWorkbook, writeFile } from 'easy-spreadsheet-write'
+
+writeFile(
+  constructWorkbook([{
+    content: [{ id: 1, regExp: /a/ }],
+    columns: [
+      ['ID', 'id'],
+      ['RegExp string', e => e.regExp.toString()],
+    ],
+  }]),
+  {
+    fileName: `Some-Magic-RegExps`,
+  },
+)
+```
+
+A more detailed sample:
 ```ts
 // ESM
 import { constructWorkbook, ESWOptions, write, writeFile } from 'easy-spreadsheet-write'
@@ -137,6 +156,44 @@ const workbook = constructWorkbook<any>(
 `easy-spreadsheet-write` is a fork of [`json-as-xlsx`](https://github.com/LuisEnMarroquin/json-as-xlsx), which I've been using for a while, but it is a bit outdated and the DX isn't as modern as it could be, so I clicked the fork button, heavily rewrite it, updating the toolchain to modern standards, improving the types, adding features, and a new package name which better describes it.
 
 Shoutout to Luis for the original work, I'd love to get this merged to upstream, will open a PR but idk if it would be accepted.
+
+Sample for migration from `json-as-xlsx`:
+```ts
+// `json-as-xlsx`
+xlsx(
+  [{
+    sheet: 'Main',
+    // @ts-expect-error signature error
+    content: [{ id: 1, regExp: /a/ }],
+    columns: [
+      { label: 'ID', value: e => e.id! },
+      { label: 'RegExp string', value: (e: any) => e.regExp.toString() },
+    ],
+  }],
+  {
+    fileName: `${t('file.seatsReport.name')}`,
+    writeOptions: {
+      compression: true,
+    },
+  },
+)
+
+// `easy-spreadsheet-write`
+// Type casting hacks and ignores are no longer needed and you get correct type inference DX
+// compression is also enabled by default to not catch you off-guard and bloat your (client)'s disk
+writeFile(
+  constructWorkbook([{
+    content: [{ id: 1, regExp: /a/ }],
+    columns: [
+      { label: 'ID', value: e => e.id },
+      { label: 'RegExp string', value: e => e.regExp.toString() },
+    ],
+  }]),
+  {
+    fileName: `${t('file.seatsReport.name')}`,
+  },
+)
+```
 
 ## License
 
