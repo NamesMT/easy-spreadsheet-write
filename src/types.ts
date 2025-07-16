@@ -69,8 +69,3 @@ export interface ESWOptions extends WritingOptions {
    */
   RTL?: boolean
 }
-
-/**
- * Internal type for writing options after defaults have been applied.
- */
-export type ResolvedWritingOptions = WritingOptions & { type: string }

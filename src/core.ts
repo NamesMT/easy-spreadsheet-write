@@ -1,6 +1,6 @@
 import type { WorkBook, WritingOptions } from '@e965/xlsx'
 import type { Buffer } from 'node:buffer'
-import type { ESWContentType, ESWDefaultContentType, ESWJsonSheet, ESWOptions, ResolvedWritingOptions } from './types'
+import type { ESWContentType, ESWDefaultContentType, ESWJsonSheet, ESWOptions } from './types'
 import { parse } from 'node:path'
 import { write as sWrite, writeFile as sWriteFile, utils } from '@e965/xlsx'
 import { jsonSheetToWorkSheet } from './utils'
@@ -32,7 +32,7 @@ O['type'] extends 'buffer'
   : O['type'] extends 'string' | 'base64' | 'binary'
     ? string
     : any {
-  const resolvedOptions: ResolvedWritingOptions = {
+  const resolvedOptions = {
     ...options,
     type: options?.type ?? 'buffer',
   }
