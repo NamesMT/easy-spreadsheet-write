@@ -50,11 +50,19 @@ export function writeFile(workbook: WorkBook, options?: Pick<ESWOptions, 'fileNa
 
 // eslint-disable-next-line ts/explicit-function-return-type
 function resolveOptions(options?: ESWOptions) {
-  return {
+  const rO = {
     ...options,
     bookType: options?.bookType ?? 'xlsx',
     fileName: options?.fileName ?? 'output',
     type: options?.type ?? 'buffer',
     compression: options?.compression ?? true,
   } satisfies ESWOptions
+
+  const extIndex = rO.fileName.lastIndexOf('.')
+
+  // If no existing extension found
+  if (extIndex === -1)
+    rO.fileName += `.${rO.bookType}`
+
+  return rO
 }
