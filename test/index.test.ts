@@ -29,6 +29,6 @@ describe('fast smoke tests', () => {
 
     const data = write(workbook, { bookType: 'ods' })
 
-    expect(await createSha256(data)).toMatchInlineSnapshot(`"s78dsYvItMgwaznHWEV1QJh_vzTNSmM2mvbrKAJOoro"`)
+    expect(await createSha256(data)).toMatchInlineSnapshot(`"Tsxc0c9-XPBwVGOORpLlpIxhDI2cOql_GKkdotIO3uU"`)
   })
 })
