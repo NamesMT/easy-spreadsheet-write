@@ -55,6 +55,6 @@ function resolveOptions(options?: ESWOptions) {
     bookType: options?.bookType ?? 'xlsx',
     fileName: options?.fileName ?? 'output',
     type: options?.type ?? 'buffer',
-    compression: options?.compression ?? false,
+    compression: options?.compression ?? true,
   } satisfies ESWOptions
 }
