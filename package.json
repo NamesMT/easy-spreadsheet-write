@@ -2,7 +2,7 @@
   "name": "easy-spreadsheet-write",
   "type": "module",
   "version": "3.0.4",
-  "packageManager": "pnpm@10.34.5",
+  "packageManager": "pnpm@12.4.1",
   "description": "Easily create spreadsheet files, json to xlsx.",
   "author": "NamesMT <dangquoctrung123@gmail.com>",
   "license": "MIT",
@@ -79,16 +79,6 @@
     "tsx": "^4.23.13",
     "typescript": "~5.8.3",
     "vitest": "^3.2.7"
-  },
-  "pnpm": {
-    "overrides": {
-      "is-core-module": "npm:@nolyfill/is-core-module@^1.0.39"
-    },
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "simple-git-hooks",
-      "unrs-resolver"
-    ]
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"
