@@ -35,10 +35,6 @@ O['type'] extends 'buffer'
 
   const data = sWrite(workbook, resolvedOptions)
 
-  // Cast Buffer to Uint8Array for platform consistency?
-  // if (options.type === 'buffer')
-  //   data = new Uint8Array(data.buffer, data.byteOffset, data.byteLength)
-
   return data
 }
 

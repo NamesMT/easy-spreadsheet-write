@@ -158,5 +158,8 @@ export function extractColumnValue(column: ESWColumn<any>): string | ((row: any)
 }
 
 export function extractColumnFormat(column: ESWColumn<any>): string | null {
-  return (column as any)?.format
+  if (Array.isArray(column))
+    return null
+
+  return column.format ?? null
 }
