@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v3.0.5
+
+[compare changes](https://github.com/namesmt/easy-spreadsheet-write/compare/v3.0.4...v3.0.5)
+
+### 🩹 Fixes
+
+- Use relative paths (drop deprecated `baseUrl`) ([d60cc95](https://github.com/namesmt/easy-spreadsheet-write/commit/d60cc95))
+
+### 💅 Refactors
+
+- Simplify extractColumnFormat and drop dead comment ([335db3d](https://github.com/namesmt/easy-spreadsheet-write/commit/335db3d))
+
+### 🏡 Chore
+
+- Migrate to pnpm 12 ([4ee5977](https://github.com/namesmt/easy-spreadsheet-write/commit/4ee5977))
+
+### 🤖 CI
+
+- Use pnpm/action-setup for pnpm 12 ([cc9842a](https://github.com/namesmt/easy-spreadsheet-write/commit/cc9842a))
+
+### ❤️ Contributors
+
+- NamesMT ([@NamesMT](https://github.com/NamesMT))
+
 ## v3.0.4
 
 [compare changes](https://github.com/namesmt/easy-spreadsheet-write/compare/v3.0.3...v3.0.4)
